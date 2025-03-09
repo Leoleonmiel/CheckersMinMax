@@ -1,19 +1,18 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-public class BoardManager : Singleton<BoardManager>
+public class BoardHandler : MonoBehaviour
 {
     #region Fields
     [SerializeField] private Transform boardStartPosition;
     [SerializeField] private Square squarePrefab;
 
-    [SerializeField] private Material blackCheckerMaterial;
-    [SerializeField] private Material whiteCheckerMaterial;
-    [SerializeField] private Material kingCheckerMaterial;
+    [SerializeField] private Material blackCheckerMaterial, whiteCheckerMaterial;
     [SerializeField] private Checker checkerPrefab;
     [SerializeField] private float moveAnimationTime = 0.5f;
 
@@ -25,12 +24,12 @@ public class BoardManager : Singleton<BoardManager>
     private int boardSize = 8;
     float squareSize;
 
+    //public event Action<Player> checkerLost;
     #endregion
 
     #region UnityMessages
-    protected override void Awake()
+    void Awake()
     {
-        base.Awake();
         if (!CalculateSquareSize()) { return; }
 
         for (int row = 0; row < boardSize; row++)
@@ -214,6 +213,7 @@ public class BoardManager : Singleton<BoardManager>
 
         Player player = GameManager.Instance.Player1.checkers.Contains(capturedChecker) ? GameManager.Instance.Player1 : GameManager.Instance.Player2;
         player.checkers.Remove(capturedChecker);
+        GameManager.Instance.CheckerLost?.Invoke(player);
 
         Destroy(capturedChecker.gameObject);
     }

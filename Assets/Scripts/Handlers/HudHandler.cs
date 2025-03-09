@@ -2,31 +2,34 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class HudManager : MonoBehaviour
+public class HudHandler : MonoBehaviour
 {
     #region Fields
-    [SerializeField] TMP_Text player1Score;  // Reference to Player 1's score text
-    [SerializeField] TMP_Text player2Score;  // Reference to Player 2's score text
-
-    List<TMP_Text> scoreTextList;
+    [SerializeField] TMP_Text player1Score;  
+    [SerializeField] TMP_Text player2Score;  
     #endregion
 
     #region UnityMessages
-    void Start()
+    void Awake()
     {
-        // Subscribe to the playerCreated event to initialize the score text
-        GameManager.Instance.playerCreated += CreateScoreText;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.PlayerCreated += CreateScoreText;
+            GameManager.Instance.CheckerLost += UpdateScore;
+        }
     }
 
     void Update()
     {
-        // Optionally update the score text here if needed (not required if only updating after events)
+        
     }
     #endregion
 
     #region PrivateMethods
     private void CreateScoreText(Player player)
     {
+        Debug.Log("in CreateScoreText: " + player.ID);
+
         if (player.ID == Utils.PlayerID.Player1) 
         {
             player1Score.text = "Player 1: " + player.checkers.Count.ToString();

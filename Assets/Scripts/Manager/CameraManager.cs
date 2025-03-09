@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CameraManager : Singleton<CameraManager>
+public class CameraManager : MonoBehaviour
 {
     #region Fields
     [Header("Camera transforms:")]
@@ -25,6 +25,7 @@ public class CameraManager : Singleton<CameraManager>
     {
         _currentFieldOfView = Camera.main.fieldOfView;
         InitCamera();
+        GameManager.Instance.PlayerSwitched += SwitchToPlayerView;
     }
     #endregion
 
@@ -41,9 +42,9 @@ public class CameraManager : Singleton<CameraManager>
         }
     }
 
-    public void SwitchToPlayerView(int playerID)
+    public void SwitchToPlayerView(Utils.PlayerID playerID)
     {
-        currentPlayerView = (playerID == 0) ? Player1View : Player2View;
+        currentPlayerView = (playerID == Utils.PlayerID.Player1) ? Player1View : Player2View;
 
         if (_isPerspectiveCamera)
         {

@@ -12,11 +12,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component, new()
                 _instance = FindAnyObjectByType<T>();
                 if (_instance == null)
                 {
-                    GameObject obj = new GameObject
-                    {
-                        name = typeof(T).Name
-                    };
-                    _instance = obj.AddComponent<T>();
+                    Debug.LogWarning("[CustomWarning] Object not found thus not created");
                 }
             }
             return _instance;
@@ -28,6 +24,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component, new()
         if (_instance == null)
         {
             _instance = this as T;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
