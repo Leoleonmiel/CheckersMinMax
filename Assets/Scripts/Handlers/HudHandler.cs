@@ -14,8 +14,8 @@ public class HudHandler : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.PlayerCreated += CreateScoreText;
-            GameManager.Instance.CheckerLost += UpdateScore;
+            GameManager.Instance.PlayerCreated += ChangeScoreText;
+            GameManager.Instance.CheckerLost += ChangeScoreText;
         }
     }
 
@@ -26,29 +26,15 @@ public class HudHandler : MonoBehaviour
     #endregion
 
     #region PrivateMethods
-    private void CreateScoreText(Player player)
+    private void ChangeScoreText(Player player)
     {
-        Debug.Log("in CreateScoreText: " + player.ID);
-
-        if (player.ID == Utils.PlayerID.Player1) 
+        if (player.ID == Utils.PlayerID.Player1)
         {
-            player1Score.text = "Player 1: " + player.checkers.Count.ToString();
+            player1Score.text = $"{Utils.PlayerID.Player1} : {player.checkers.Count.ToString()}";
         }
-        else if (player.ID == Utils.PlayerID.Player2) 
+        else if (player.ID == Utils.PlayerID.Player2)
         {
-            player2Score.text = "Player 2: " + player.checkers.Count.ToString();
-        }
-    }
-
-    public void UpdateScore(Player player)
-    {
-        if (player.ID == Utils.PlayerID.Player1)  
-        {
-            player1Score.text = "Player 1: " + player.checkers.Count.ToString();
-        }
-        else if (player.ID == Utils.PlayerID.Player2)  
-        {
-            player2Score.text = "Player 2: " + player.checkers.Count.ToString();
+            player2Score.text = $"{Utils.PlayerID.Player2} : {player.checkers.Count.ToString()}";
         }
     }
     #endregion
