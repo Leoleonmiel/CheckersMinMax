@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraHandler : MonoBehaviour
 {
     #region Fields
     [Header("Camera transforms:")]

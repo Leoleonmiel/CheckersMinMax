@@ -1085,7 +1085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &612495023
 Transform:
   m_ObjectHideFlags: 0
@@ -1443,7 +1443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1074384347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1583,7 +1583,6 @@ MonoBehaviour:
   squarePrefab: {fileID: 8155984088600104086, guid: d5293f1b411d64047ad3274d784778d1, type: 3}
   blackCheckerMaterial: {fileID: 2100000, guid: 6860b1a98d46b8f4a996864be7eaf885, type: 2}
   whiteCheckerMaterial: {fileID: 2100000, guid: 2ab7e8f5c3447c2488688de60d7294b9, type: 2}
-  kingCheckerMaterial: {fileID: 0}
   checkerPrefab: {fileID: 4587470176875272999, guid: f2a6abc5b08331148b27447c3dce3b43, type: 3}
   moveAnimationTime: 0.5
 --- !u!1 &1443331762
