@@ -41,6 +41,12 @@ public class LoadHandler : MonoBehaviour
     {
         GameStateManager.Instance.currentState = GameStateManager.State.PlayerVsAI;
         StartCoroutine(LoadSceneWithFade("GameScene"));
+    } 
+    
+    public void SetAIVsAI()
+    {
+        GameStateManager.Instance.currentState = GameStateManager.State.AIVsAI;
+        StartCoroutine(LoadSceneWithFade("GameScene"));
     }
     #endregion
 

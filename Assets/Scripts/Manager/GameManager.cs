@@ -56,6 +56,13 @@ public class GameManager : Singleton<GameManager>
                         aiHandler = new AIHandler(boardHandler, AIDifficulty);
                     }
                     break;
+                case GameStateManager.State.AIVsAI:
+                    InitAIVsAI();
+                    if (boardHandler != null)
+                    {
+                        aiHandler = new AIHandler(boardHandler, AIDifficulty);
+                    }
+                    break;
                 default:
                     Debug.LogError("No state given");
                     break;
@@ -63,10 +70,13 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+
     private void Start()
     {
         InitPlayerScore();
         currentPlayerID = Utils.PlayerID.Player1;
+
+
     }
 
     private void Update()
@@ -114,12 +124,21 @@ public class GameManager : Singleton<GameManager>
 
     private void InitPlayerVsAI()
     {
-        // Create Player 1 (Human)
         Player player1 = Instantiate(playerPrefab, transform);
         player1.Init(Utils.PlayerID.Player1, Utils.PlayerType.Human);
         players.Add(player1);
 
-        // Create Player 2 (AI)
+        Player player2 = Instantiate(playerPrefab, transform);
+        player2.Init(Utils.PlayerID.Player2, Utils.PlayerType.AI);
+        players.Add(player2);
+    }
+
+    private void InitAIVsAI()
+    {
+        Player player1 = Instantiate(playerPrefab, transform);
+        player1.Init(Utils.PlayerID.Player1, Utils.PlayerType.AI);
+        players.Add(player1);
+
         Player player2 = Instantiate(playerPrefab, transform);
         player2.Init(Utils.PlayerID.Player2, Utils.PlayerType.AI);
         players.Add(player2);

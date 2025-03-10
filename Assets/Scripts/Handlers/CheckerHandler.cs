@@ -7,7 +7,7 @@ using System.Collections;
 public class CheckerHandler
 {
     private List<Checker> highlightedCheckers = new List<Checker>();
-    private List<Square> validMoves = new List<Square>(); 
+    private List<Square> validMoves = new List<Square>();
 
     private Checker selectedChecker;
     private BoardHandler boardHandler;
@@ -17,6 +17,13 @@ public class CheckerHandler
         this.boardHandler = boardHandler;
         currentPlayer = GameManager.Instance.CurrentPlayer;
         GameManager.Instance.OnTurnSwitched += OnTurnSwitched;
+
+        if (currentPlayer.type == Utils.PlayerType.AI 
+            && GameStateManager.Instance.currentState == GameStateManager.State.AIVsAI)
+        {
+            Debug.Log("AI vs AI detected. Starting first AI move...");
+            boardHandler.StartCoroutine(AIMoveDelayed());
+        }
     }
 
     public void Dispose()
@@ -29,8 +36,11 @@ public class CheckerHandler
 
     public void Update()
     {
-        DetectCheckerClick();
-        DetectSquareClick();
+        if (currentPlayer.type == Utils.PlayerType.Human)
+        {
+            DetectCheckerClick();
+            DetectSquareClick();
+        }
     }
 
     private void DetectCheckerClick()
@@ -67,9 +77,11 @@ public class CheckerHandler
 
     private void OnCheckerClicked(Checker checker)
     {
-        if (!currentPlayer.checkers.Contains(checker)){
+        if (!currentPlayer.checkers.Contains(checker))
+        {
             Debug.Log("Can't select opponent checker");
-            return;}
+            return;
+        }
 
         if (selectedChecker == checker)
         {
@@ -101,12 +113,12 @@ public class CheckerHandler
         currentSquare.RemoveChecker();
 
         int rowDiff = Mathf.Abs(destination.row - currentSquare.row);
-        if (rowDiff == 2) 
+        if (rowDiff == 2)
         {
             Square middleSquare = boardHandler.GetSquareAt((currentSquare.row + destination.row) / 2, (currentSquare.col + destination.col) / 2);
             if (middleSquare != null && middleSquare.HasChecker() && middleSquare.currentChecker.type != checker.type)
             {
-                CaptureChecker(middleSquare.currentChecker); 
+                CaptureChecker(middleSquare.currentChecker);
             }
         }
 
@@ -153,7 +165,7 @@ public class CheckerHandler
 
         if (losingPlayer.checkers.Count == 0)
         {
-            GameManager.Instance.PlayerHasWon?.Invoke(winningPlayer, true); 
+            GameManager.Instance.PlayerHasWon?.Invoke(winningPlayer, true);
         }
 
         Object.Destroy(capturedChecker.gameObject);
@@ -291,18 +303,33 @@ public class CheckerHandler
 
     private void AIMove()
     {
+
+        if (currentPlayer == null || currentPlayer.type != Utils.PlayerType.AI) return;
         AIHandler aiHandler = GameManager.Instance.AIHandler;
+        if (aiHandler == null)
+        {
+            Debug.LogError("AIHandler is NULL!");
+            return;
+        }
+
         (Checker bestChecker, Square bestMove) = aiHandler.GetBestMove(currentPlayer);
 
         if (bestChecker != null && bestMove != null)
         {
+            Debug.Log($"AI ({currentPlayer.ID}) moving {bestChecker.name} to {bestMove.name}");
             MoveCheckerAI(bestChecker, bestMove);
         }
         else
         {
-            Debug.Log("AI has no valid moves.");
-            GameManager.Instance.SwitchTurn(); // Skip turn if AI can't move
+            Debug.Log("AI has no valid moves. Skipping turn.");
+            boardHandler.StartCoroutine(DelayedSwitchTurn()); // ✅ Ensure turn switch
         }
+    }
+
+    private IEnumerator DelayedSwitchTurn()
+    {
+        yield return new WaitForSeconds(0.5f);
+        GameManager.Instance.SwitchTurn();
     }
 
     public void MoveCheckerAI(Checker checker, Square destination)
@@ -313,7 +340,7 @@ public class CheckerHandler
         currentSquare.RemoveChecker();
 
         int rowDiff = Mathf.Abs(destination.row - currentSquare.row);
-        if (rowDiff == 2) // If jump move, capture opponent
+        if (rowDiff == 2) // ✅ Capture move handling
         {
             Square middleSquare = boardHandler.GetSquareAt((currentSquare.row + destination.row) / 2,
                                                            (currentSquare.col + destination.col) / 2);
@@ -332,7 +359,8 @@ public class CheckerHandler
             .OnComplete(() =>
             {
                 PromoteIfKing(checker);
-                GameManager.Instance.SwitchTurn();
+                Debug.Log($"AI ({currentPlayer.ID}) finished move. Switching turn...");
+                boardHandler.StartCoroutine(DelayedSwitchTurn()); // ✅ Ensures AI switches turn
             });
     }
 }

@@ -989,7 +989,7 @@ GameObject:
   - component: {fileID: 691990903}
   - component: {fileID: 691990902}
   m_Layer: 5
-  m_Name: ButtonPvE (1)
+  m_Name: ButtonAIvsAI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1061,7 +1061,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4310273368747523980}
         m_TargetAssemblyTypeName: LoadHandler, Assembly-CSharp
-        m_MethodName: SetPlayerVsAI
+        m_MethodName: SetAIVsAI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
