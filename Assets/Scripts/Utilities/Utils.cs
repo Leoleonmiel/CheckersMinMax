@@ -27,5 +27,4 @@ public static class Utils
         Up = 1,      
         Down = -1   
     }
-
 }

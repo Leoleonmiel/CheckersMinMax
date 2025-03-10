@@ -6,7 +6,8 @@ public class Player : MonoBehaviour
 {
     #region Fields
     private Utils.PlayerID id;
-    public Utils.Type type;
+    public Utils.Type color;
+    public Utils.PlayerType type;
     public List<Checker> checkers = new();
 
     #endregion
@@ -15,10 +16,11 @@ public class Player : MonoBehaviour
     public Utils.PlayerID ID => id;
     #endregion
     #region PublicMethods
-    public void Init(Utils.PlayerID id)
+    public void Init(Utils.PlayerID id, Utils.PlayerType type)
     {
         this.id = id;
-        gameObject.name = "Player_ " + id;
+        this.type = type;
+        gameObject.name = $"{id}";
     }
 
     public void ResetCheckersChoosing()

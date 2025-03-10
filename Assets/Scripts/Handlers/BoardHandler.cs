@@ -45,12 +45,12 @@ public class BoardHandler : MonoBehaviour
                         if (row < 3)
                         {
                             player = GameManager.Instance.Player1;
-                            player.type = Utils.Type.Black;
+                            player.color = Utils.Type.Black;
                         }
                         else
                         {
                             player = GameManager.Instance.Player2;
-                            player.type = Utils.Type.White;
+                            player.color = Utils.Type.White;
                         }
 
                         PlaceChecker(newPosition, row, col, ref player, ref newSquare);
@@ -76,7 +76,7 @@ public class BoardHandler : MonoBehaviour
     {
         Checker newChecker = Instantiate(checkerPrefab, position + Vector3.up * 0.1f, Quaternion.identity, player.transform);
         newChecker.Init(row * boardSize + col);
-        newChecker.type = player.type;
+        newChecker.type = player.color;
         player.checkers.Add(newChecker);
         square.PlaceChecker(newChecker);
         newChecker.CurrentSquare = square;

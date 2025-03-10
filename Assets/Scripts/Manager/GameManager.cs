@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -18,7 +19,8 @@ public class GameManager : Singleton<GameManager>
     public event Action<Player> PlayerCreated;
     public event Action<Utils.PlayerID> PlayerSwitched;
     public Action<Player> CheckerLost;
-
+    public event Action<bool> PlayerHasWon;
+    private bool isActivated = false;
     #endregion
 
     #region Properties
@@ -33,7 +35,22 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        InitPlayers();
+        //InitPlayersPvP();
+        if (GameStateManager.Instance != null)
+        {
+            switch (GameStateManager.Instance.currentState)
+            {
+                case GameStateManager.State.PlayerVsPlayer:
+                    InitPlayersPvP();
+                    break;
+                case GameStateManager.State.PlayerVsAI:
+                    InitPlayerVsAI();
+                    break;
+                default:
+                    Debug.LogError("No state given");
+                    break;
+            }
+        }
     }
 
     private void Start()
@@ -41,12 +58,22 @@ public class GameManager : Singleton<GameManager>
         InitPlayerScore();
         currentPlayerID = Utils.PlayerID.Player1;
     }
+
+    private void Update()
+    {
+        if (Keyboard.current.oKey.wasPressedThisFrame)
+        {
+            isActivated = !isActivated;
+            PlayerHasWon?.Invoke(isActivated);
+            Debug.Log("o pressed");
+        }
+    }
     #endregion
 
     #region PublicMethods
     public void SelectCheckerForPlayer(Utils.PlayerID playerID, Checker checker)
     {
-        if (playerID != currentPlayerID) { return; } 
+        if (playerID != currentPlayerID) { return; }
         if (playerID < 0 || (int)playerID >= players.Count) { return; }
 
         Player player = players[(int)playerID];
@@ -65,21 +92,26 @@ public class GameManager : Singleton<GameManager>
     {
         currentPlayerID = currentPlayerID = (Utils.PlayerID)(((int)currentPlayerID + 1) % nbOfPlayers);
         PlayerSwitched?.Invoke(currentPlayerID);
-        //CameraManager.Instance.SwitchToPlayerView((int)currentPlayerID);
-        Debug.Log($"Turn switched! Now it's Player {currentPlayerID}'s turn.");
     }
 
     #endregion
 
     #region PrivateMethods
-    private void InitPlayers()
+    private void InitPlayersPvP()
     {
         for (int ID = 0; ID < nbOfPlayers; ID++)
         {
             Player newPlayer = Instantiate(playerPrefab, transform);
-            newPlayer.Init((Utils.PlayerID)ID);
+            newPlayer.Init((Utils.PlayerID)ID, Utils.PlayerType.Human);
             players.Add(newPlayer);
         }
+    }
+
+    private void InitPlayerVsAI()
+    {
+        Player newPlayer = Instantiate(playerPrefab, transform);
+        newPlayer.Init(Utils.PlayerID.Player1, Utils.PlayerType.Human);
+        newPlayer.Init(Utils.PlayerID.Player1, Utils.PlayerType.AI);
     }
 
     private void InitPlayerScore()

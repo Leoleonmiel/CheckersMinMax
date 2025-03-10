@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Singleton<T> : MonoBehaviour where T : Component, new()
+public abstract class Singleton<T> : MonoBehaviour where T : Component
 {
     private static T _instance;
     public static T Instance
@@ -10,25 +10,27 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component, new()
             if (_instance == null)
             {
                 _instance = FindAnyObjectByType<T>();
-                if (_instance == null)
-                {
-                    Debug.LogWarning("[CustomWarning] Object not found thus not created");
-                }
             }
             return _instance;
         }
     }
+
+    [SerializeField]
+     bool dontDestroyOnLoad = false;
 
     protected virtual void Awake()
     {
         if (_instance == null)
         {
             _instance = this as T;
-            DontDestroyOnLoad(gameObject);
+
+            if (dontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(gameObject);  
+            }
         }
         else
         {
-            Debug.LogError(gameObject);
             Destroy(gameObject);
         }
     }

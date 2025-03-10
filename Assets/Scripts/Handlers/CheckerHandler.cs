@@ -57,7 +57,9 @@ public class CheckerHandler
 
     private void OnCheckerClicked(Checker checker)
     {
-        if (!currentPlayer.checkers.Contains(checker)){return;}
+        if (!currentPlayer.checkers.Contains(checker)){
+            Debug.Log("Can't select opponent checker");
+            return;}
 
         if (selectedChecker == checker)
         {
