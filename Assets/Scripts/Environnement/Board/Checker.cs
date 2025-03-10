@@ -21,9 +21,6 @@ public class Checker : MonoBehaviour
     public bool IsKing { get; private set; } = false;
     #endregion
 
-    #region Properties
-
-    #endregion
     #region UnityMessages
     public void OnDrawGizmos()
     {

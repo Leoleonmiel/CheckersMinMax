@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public static class Utils
@@ -27,4 +28,12 @@ public static class Utils
         Up = 1,      
         Down = -1   
     }
+
+	[Serializable]
+	public enum AIDifficulty
+	{
+		Easy,
+		Medium,
+		Hard
+	}
 }

@@ -11,6 +11,7 @@ public class GameManager : Singleton<GameManager>
     #region Fields
     [Header("Players Settings:")]
     [SerializeField] private Player playerPrefab;
+    private BoardHandler boardHandler;
     private List<Player> players = new();
     private int nbOfPlayers = 2;
 
@@ -20,7 +21,9 @@ public class GameManager : Singleton<GameManager>
     public event Action<Player> PlayerCreated;
     public event Action<Player> OnTurnSwitched;
     public Action<Player> CheckerLost;
-    public Action<Player,bool> PlayerHasWon;
+    public Action<Player, bool> PlayerHasWon;
+
+    private AIHandler aiHandler;
     #endregion
 
     #region Properties
@@ -28,6 +31,8 @@ public class GameManager : Singleton<GameManager>
     public Player Player2 => players.Last();
     public Player CurrentPlayer => players[(int)currentPlayerID];
     public Utils.PlayerID CurrentPlayerID => currentPlayerID;
+    public AIHandler AIHandler => aiHandler;
+    public Utils.AIDifficulty AIDifficulty => GameStateManager.Instance.aiDifficulty;
     #endregion
 
 
@@ -35,19 +40,21 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
-        //InitPlayersPvP();
+
+        boardHandler = FindFirstObjectByType<BoardHandler>();
         if (GameStateManager.Instance != null)
         {
             switch (GameStateManager.Instance.currentState)
             {
-                case GameStateManager.State.Menu:
-                    InitPlayersPvP();
-                    break;
                 case GameStateManager.State.PlayerVsPlayer:
                     InitPlayersPvP();
                     break;
                 case GameStateManager.State.PlayerVsAI:
                     InitPlayerVsAI();
+                    if (boardHandler != null)
+                    {
+                        aiHandler = new AIHandler(boardHandler, AIDifficulty);
+                    }
                     break;
                 default:
                     Debug.LogError("No state given");
@@ -107,9 +114,15 @@ public class GameManager : Singleton<GameManager>
 
     private void InitPlayerVsAI()
     {
-        Player newPlayer = Instantiate(playerPrefab, transform);
-        newPlayer.Init(Utils.PlayerID.Player1, Utils.PlayerType.Human);
-        newPlayer.Init(Utils.PlayerID.Player1, Utils.PlayerType.AI);
+        // Create Player 1 (Human)
+        Player player1 = Instantiate(playerPrefab, transform);
+        player1.Init(Utils.PlayerID.Player1, Utils.PlayerType.Human);
+        players.Add(player1);
+
+        // Create Player 2 (AI)
+        Player player2 = Instantiate(playerPrefab, transform);
+        player2.Init(Utils.PlayerID.Player2, Utils.PlayerType.AI);
+        players.Add(player2);
     }
 
     private void InitPlayerScore()

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -10,6 +10,8 @@ public class GameHudHandler : MonoBehaviour
     [SerializeField] TMP_Text player1Score;
     [SerializeField] TMP_Text player2Score;
     [SerializeField] GameObject EndScreenPanel;
+
+    [SerializeField] private TextMeshProUGUI aiStatsText; // Reference to UI text
     #endregion
 
     #region UnityMessages
@@ -75,5 +77,9 @@ public class GameHudHandler : MonoBehaviour
         }
     }
 
+    public void UpdateAIStats(int nodesExplored, int depth, Utils.AIDifficulty difficulty)
+    {
+        aiStatsText.text = $"Difficulty {difficulty}\nNodes Evaluated: {nodesExplored} Moves\nSearch Depth: {depth}";
+    }
     #endregion
 }

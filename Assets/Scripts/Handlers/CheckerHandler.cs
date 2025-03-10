@@ -2,6 +2,7 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Security.Cryptography;
+using System.Collections;
 
 public class CheckerHandler
 {
@@ -20,7 +21,10 @@ public class CheckerHandler
 
     public void Dispose()
     {
-        GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
+        }
     }
 
     public void Update()
@@ -118,7 +122,6 @@ public class CheckerHandler
                 selectedChecker = null;
                 ClearHighlightedSquares();
                 HighlightSelectedChecker(checker);
-                //boardHandler.SwitchTurn();
                 GameManager.Instance.SwitchTurn();
             });
     }
@@ -274,5 +277,62 @@ public class CheckerHandler
         currentPlayer = player;
         ClearHighlightedSelectedCheckers();
         HighlightCheckersThatCanMove();
+        if (currentPlayer.type == Utils.PlayerType.AI)
+        {
+            boardHandler.StartCoroutine(AIMoveDelayed());
+        }
+    }
+
+    public IEnumerator AIMoveDelayed()
+    {
+        yield return new WaitForSeconds(0.5f);
+        AIMove();
+    }
+
+    private void AIMove()
+    {
+        AIHandler aiHandler = GameManager.Instance.AIHandler;
+        (Checker bestChecker, Square bestMove) = aiHandler.GetBestMove(currentPlayer);
+
+        if (bestChecker != null && bestMove != null)
+        {
+            MoveCheckerAI(bestChecker, bestMove);
+        }
+        else
+        {
+            Debug.Log("AI has no valid moves.");
+            GameManager.Instance.SwitchTurn(); // Skip turn if AI can't move
+        }
+    }
+
+    public void MoveCheckerAI(Checker checker, Square destination)
+    {
+        if (checker == null || destination == null) return;
+
+        Square currentSquare = checker.CurrentSquare;
+        currentSquare.RemoveChecker();
+
+        int rowDiff = Mathf.Abs(destination.row - currentSquare.row);
+        if (rowDiff == 2) // If jump move, capture opponent
+        {
+            Square middleSquare = boardHandler.GetSquareAt((currentSquare.row + destination.row) / 2,
+                                                           (currentSquare.col + destination.col) / 2);
+            if (middleSquare != null && middleSquare.HasChecker() && middleSquare.currentChecker.type != checker.type)
+            {
+                CaptureChecker(middleSquare.currentChecker);
+            }
+        }
+
+        destination.PlaceChecker(checker);
+        checker.CurrentSquare = destination;
+
+        Vector3 targetPosition = destination.transform.position + Vector3.up * 0.1f;
+        checker.transform.DOMove(targetPosition, boardHandler.moveAnimationTime)
+            .SetEase(Ease.OutSine)
+            .OnComplete(() =>
+            {
+                PromoteIfKing(checker);
+                GameManager.Instance.SwitchTurn();
+            });
     }
 }

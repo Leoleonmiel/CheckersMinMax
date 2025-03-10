@@ -11,8 +11,10 @@ public class BoardHandler : MonoBehaviour
     [SerializeField] private Checker checkerPrefab;
     [SerializeField] public float moveAnimationTime = 0.5f;
 
+    [SerializeField] private GameHudHandler gameHudHandler;
+
     private List<Square> squareList = new List<Square>();
-    private CheckerHandler checkerHandler; 
+    private CheckerHandler checkerHandler;
 
     private int boardSize = 8;
     private float squareSize;
@@ -21,8 +23,9 @@ public class BoardHandler : MonoBehaviour
     private int nbOfStartingRows = 3;
 
     [SerializeField, Tooltip("Starting row offset for checkers")]
-    private int startingRowOffset = 0;
+    private int startingRowID = 0;
     public int BoardSize => boardSize;
+    public GameHudHandler GameHudHandler => gameHudHandler;
     #endregion
 
     #region UnityMessages
@@ -43,8 +46,8 @@ public class BoardHandler : MonoBehaviour
 
                 if (newSquare.color == Square.Type.Black)
                 {
-                    if ((row >= startingRowOffset && row < startingRowOffset + nbOfStartingRows) ||
-                        (row >= boardSize - nbOfStartingRows - startingRowOffset && row < boardSize - startingRowOffset))
+                    if ((row >= startingRowID && row < startingRowID + nbOfStartingRows) ||
+                        (row >= boardSize - nbOfStartingRows - startingRowID && row < boardSize - startingRowID))
                     {
                         Player player;
                         if (row < boardSize / 2)
@@ -76,7 +79,11 @@ public class BoardHandler : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
+
+        }
         checkerHandler.Dispose();
         checkerHandler = null;
     }
@@ -125,14 +132,14 @@ public class BoardHandler : MonoBehaviour
 
     private void HighlightCheckersThatCanMove()
     {
-        checkerHandler.ClearHighlightedSelectedCheckers(); 
+        checkerHandler.ClearHighlightedSelectedCheckers();
         Player currentPlayer = GameManager.Instance.CurrentPlayer;
         foreach (Checker checker in currentPlayer.checkers)
         {
             if (CanMove(checker))
             {
-                checker.Highlight(true); 
-                checkerHandler.AddHighlightedChecker(checker); 
+                checker.Highlight(true);
+                checkerHandler.AddHighlightedChecker(checker);
             }
         }
     }
@@ -143,7 +150,7 @@ public class BoardHandler : MonoBehaviour
         return validMovesForChecker.Count > 0;
     }
 
-    private List<Square> GetValidMoves(Checker checker)
+    public List<Square> GetValidMoves(Checker checker)
     {
         List<Square> validMovesForChecker = new List<Square>();
         Square currentSquare = checker.CurrentSquare;
@@ -194,6 +201,11 @@ public class BoardHandler : MonoBehaviour
         return validMovesForChecker;
     }
 
+    public List<Square> GetAllSquares()
+    {
+        return squareList;
+    }
+
     public Square GetSquareAt(int row, int col)
     {
         if (row < 0 || row >= boardSize || col < 0 || col >= boardSize)
@@ -205,6 +217,10 @@ public class BoardHandler : MonoBehaviour
     private void OnTurnSwitched(Player currentPlayer)
     {
         HighlightCheckersThatCanMove();
+        //if (currentPlayer.type == Utils.PlayerType.AI)
+        //{
+        //    StartCoroutine(checkerHandler.AIMoveDelayed());
+        //}
     }
     #endregion
 

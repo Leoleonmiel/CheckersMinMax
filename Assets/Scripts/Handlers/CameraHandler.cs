@@ -6,7 +6,7 @@ public class CameraHandler : MonoBehaviour
 {
     #region Fields
     [Header("Camera transforms:")]
-    [SerializeField] private Transform Player1View; 
+    [SerializeField] private Transform Player1View;
     [SerializeField] private Transform Player2View;
     [SerializeField] private Transform TopDownTransform;
 
@@ -30,7 +30,10 @@ public class CameraHandler : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.Instance.OnTurnSwitched -= SwitchToPlayerView;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTurnSwitched -= SwitchToPlayerView;
+        }
     }
     #endregion
 
@@ -49,7 +52,11 @@ public class CameraHandler : MonoBehaviour
 
     public void SwitchToPlayerView(Player player)
     {
-        currentPlayerView = (player.ID == Utils.PlayerID.Player1) ? Player1View : Player2View;
+        if (player.type == Utils.PlayerType.Human)
+        {
+            currentPlayerView = (player.ID == Utils.PlayerID.Player1) ? Player1View : Player2View;
+        }
+
 
         if (_isPerspectiveCamera)
         {
@@ -57,7 +64,7 @@ public class CameraHandler : MonoBehaviour
         }
         else
         {
-            SwitchToTopDown(); 
+            SwitchToTopDown();
         }
     }
     #endregion
@@ -67,13 +74,13 @@ public class CameraHandler : MonoBehaviour
     {
         _isPerspectiveCamera = true;
         currentPlayerView = Player1View;
-        MoveCameraTo(currentPlayerView.position, currentPlayerView.rotation, _currentFieldOfView);  
+        MoveCameraTo(currentPlayerView.position, currentPlayerView.rotation, _currentFieldOfView);
     }
 
     private void SwitchToPerspective()
     {
         IsPerspectiveCamera = true;
-        MoveCameraTo(currentPlayerView.position, currentPlayerView.rotation, _currentFieldOfView); 
+        MoveCameraTo(currentPlayerView.position, currentPlayerView.rotation, _currentFieldOfView);
     }
 
     private void SwitchToTopDown()
