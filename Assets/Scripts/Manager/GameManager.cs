@@ -11,19 +11,20 @@ public class GameManager : Singleton<GameManager>
     #region Fields
     [Header("Players Settings:")]
     [SerializeField] private Player playerPrefab;
+
     private BoardHandler boardHandler;
     private List<Player> players = new();
     private int nbOfPlayers = 2;
 
     private Dictionary<int, Checker> selectedCheckers = new();
     private Utils.PlayerID currentPlayerID;
+    private AIHandler aiHandler;
 
     public event Action<Player> PlayerCreated;
     public event Action<Player> OnTurnSwitched;
     public Action<Player> CheckerLost;
     public Action<Player, bool> PlayerHasWon;
 
-    private AIHandler aiHandler;
     #endregion
 
     #region Properties
@@ -75,13 +76,6 @@ public class GameManager : Singleton<GameManager>
     {
         InitPlayerScore();
         currentPlayerID = Utils.PlayerID.Player1;
-
-
-    }
-
-    private void Update()
-    {
-
     }
     #endregion
 
@@ -152,6 +146,5 @@ public class GameManager : Singleton<GameManager>
             Debug.Log(player);
         }
     }
-
     #endregion
 }

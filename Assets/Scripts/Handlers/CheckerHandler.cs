@@ -6,12 +6,16 @@ using System.Collections;
 
 public class CheckerHandler
 {
+    #region Fields
     private List<Checker> highlightedCheckers = new List<Checker>();
     private List<Square> validMoves = new List<Square>();
 
     private Checker selectedChecker;
     private BoardHandler boardHandler;
     private Player currentPlayer;
+    #endregion
+
+    #region PublicMethods
     public CheckerHandler(BoardHandler boardHandler)
     {
         this.boardHandler = boardHandler;
@@ -21,7 +25,6 @@ public class CheckerHandler
         if (currentPlayer.type == Utils.PlayerType.AI 
             && GameStateManager.Instance.currentState == GameStateManager.State.AIVsAI)
         {
-            Debug.Log("AI vs AI detected. Starting first AI move...");
             boardHandler.StartCoroutine(AIMoveDelayed());
         }
     }
@@ -43,6 +46,30 @@ public class CheckerHandler
         }
     }
 
+    public void ClearHighlightedSelectedCheckers()
+    {
+        foreach (Checker checker in highlightedCheckers)
+        {
+            checker.Highlight(false);
+        }
+        highlightedCheckers.Clear();
+    }
+
+    public void SetCurrentPlayer(Player player)
+    {
+        currentPlayer = player;
+    }
+
+    public void AddHighlightedChecker(Checker checker)
+    {
+        if (!highlightedCheckers.Contains(checker))
+        {
+            highlightedCheckers.Add(checker);
+        }
+    }
+    #endregion
+
+    #region PrivateMethods
     private void DetectCheckerClick()
     {
         if (Input.GetMouseButtonDown(0))
@@ -77,11 +104,7 @@ public class CheckerHandler
 
     private void OnCheckerClicked(Checker checker)
     {
-        if (!currentPlayer.checkers.Contains(checker))
-        {
-            Debug.Log("Can't select opponent checker");
-            return;
-        }
+        if (!currentPlayer.checkers.Contains(checker)){ return; }
 
         if (selectedChecker == checker)
         {
@@ -262,28 +285,10 @@ public class CheckerHandler
         }
     }
 
-    public void ClearHighlightedSelectedCheckers()
-    {
-        foreach (Checker checker in highlightedCheckers)
-        {
-            checker.Highlight(false);
-        }
-        highlightedCheckers.Clear();
-    }
+    #endregion
 
-    public void SetCurrentPlayer(Player player)
-    {
-        currentPlayer = player;
-    }
 
-    public void AddHighlightedChecker(Checker checker)
-    {
-        if (!highlightedCheckers.Contains(checker))
-        {
-            highlightedCheckers.Add(checker);
-        }
-    }
-
+    #region PrivateMethods
     private void OnTurnSwitched(Player player)
     {
         currentPlayer = player;
@@ -295,7 +300,7 @@ public class CheckerHandler
         }
     }
 
-    public IEnumerator AIMoveDelayed()
+    private IEnumerator AIMoveDelayed()
     {
         yield return new WaitForSeconds(0.5f);
         AIMove();
@@ -316,13 +321,11 @@ public class CheckerHandler
 
         if (bestChecker != null && bestMove != null)
         {
-            Debug.Log($"AI ({currentPlayer.ID}) moving {bestChecker.name} to {bestMove.name}");
             MoveCheckerAI(bestChecker, bestMove);
         }
         else
         {
-            Debug.Log("AI has no valid moves. Skipping turn.");
-            boardHandler.StartCoroutine(DelayedSwitchTurn()); // ✅ Ensure turn switch
+            boardHandler.StartCoroutine(DelayedSwitchTurn()); // 
         }
     }
 
@@ -340,7 +343,7 @@ public class CheckerHandler
         currentSquare.RemoveChecker();
 
         int rowDiff = Mathf.Abs(destination.row - currentSquare.row);
-        if (rowDiff == 2) // ✅ Capture move handling
+        if (rowDiff == 2) 
         {
             Square middleSquare = boardHandler.GetSquareAt((currentSquare.row + destination.row) / 2,
                                                            (currentSquare.col + destination.col) / 2);
@@ -359,8 +362,8 @@ public class CheckerHandler
             .OnComplete(() =>
             {
                 PromoteIfKing(checker);
-                Debug.Log($"AI ({currentPlayer.ID}) finished move. Switching turn...");
-                boardHandler.StartCoroutine(DelayedSwitchTurn()); // ✅ Ensures AI switches turn
+                boardHandler.StartCoroutine(DelayedSwitchTurn()); 
             });
     }
+    #endregion
 }

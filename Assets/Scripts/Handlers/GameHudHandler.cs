@@ -11,7 +11,7 @@ public class GameHudHandler : MonoBehaviour
     [SerializeField] TMP_Text player2Score;
     [SerializeField] GameObject EndScreenPanel;
 
-    [SerializeField] private TextMeshProUGUI aiStatsText; // Reference to UI text
+    [SerializeField] private TextMeshProUGUI aiStatsText; 
     #endregion
 
     #region UnityMessages
@@ -23,11 +23,6 @@ public class GameHudHandler : MonoBehaviour
             GameManager.Instance.CheckerLost += ChangeScoreText;
             GameManager.Instance.PlayerHasWon += ToggleEndScreen;
         }
-    }
-
-    void Update()
-    {
-
     }
     #endregion
 
@@ -66,14 +61,6 @@ public class GameHudHandler : MonoBehaviour
             {
                 endScreenText.text = $"{player.name} Wins!";
             }
-            else
-            {
-                Debug.LogError("No TMP_Text component found in EndScreenPanel!");
-            }
-        }
-        else
-        {
-            Debug.LogError("EndScreenPanel is not assigned in the inspector!");
         }
     }
 

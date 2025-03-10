@@ -14,7 +14,6 @@ public class LoadHandler : MonoBehaviour
     #region UnityMessages
     void Start()
     {
-        // Get the current canvas in the scene
         currentCanvas = FindAnyObjectByType<Canvas>();
 
         if (currentCanvas == null)

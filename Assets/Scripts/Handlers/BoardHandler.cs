@@ -5,25 +5,26 @@ using UnityEngine;
 public class BoardHandler : MonoBehaviour
 {
     #region Fields
+    [Header("Board Settings:")]
     [SerializeField] private Transform boardStartPosition;
+    [SerializeField, Tooltip("Control number of rows with pieces")]
+    private int nbOfStartingRows = 3;
+    [SerializeField, Tooltip("Starting row offset for checkers")]
+    private int startingRowID = 0;
+
+    [Header("Board Visual Settings:")]
     [SerializeField] private Square squarePrefab;
     [SerializeField] private Material blackCheckerMaterial, whiteCheckerMaterial;
     [SerializeField] private Checker checkerPrefab;
     [SerializeField] public float moveAnimationTime = 0.5f;
-
     [SerializeField] private GameHudHandler gameHudHandler;
+
 
     private List<Square> squareList = new List<Square>();
     private CheckerHandler checkerHandler;
-
     private int boardSize = 8;
     private float squareSize;
 
-    [SerializeField, Tooltip("Control number of rows with pieces")]
-    private int nbOfStartingRows = 3;
-
-    [SerializeField, Tooltip("Starting row offset for checkers")]
-    private int startingRowID = 0;
     public int BoardSize => boardSize;
     public GameHudHandler GameHudHandler => gameHudHandler;
     #endregion
@@ -144,6 +145,13 @@ public class BoardHandler : MonoBehaviour
         }
     }
 
+    private void OnTurnSwitched(Player currentPlayer)
+    {
+        HighlightCheckersThatCanMove();
+    }
+    #endregion
+
+    #region PublicMethods
     public bool CanMove(Checker checker)
     {
         List<Square> validMovesForChecker = GetValidMoves(checker);
@@ -212,15 +220,6 @@ public class BoardHandler : MonoBehaviour
             return null;
 
         return squareList[row * boardSize + col];
-    }
-
-    private void OnTurnSwitched(Player currentPlayer)
-    {
-        HighlightCheckersThatCanMove();
-        //if (currentPlayer.type == Utils.PlayerType.AI)
-        //{
-        //    StartCoroutine(checkerHandler.AIMoveDelayed());
-        //}
     }
     #endregion
 

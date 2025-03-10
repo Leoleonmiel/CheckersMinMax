@@ -4,30 +4,40 @@ using UnityEngine;
 
 public class AIHandler
 {
+    #region Fields
     private int maxDepth;
-    private BoardHandler boardHandler;
+    private readonly BoardHandler boardHandler;
     private int nodesExplored = 0;
     private (Checker, Square) previousMove = (null, null);
-    private Utils.AIDifficulty difficulty;
+    private readonly Utils.AIDifficulty difficulty;
 
+    private const int normalPieceValue = 5;
+    private const int kingPieceValue = 10;
+    private const int positionAdvanceBonus = 3;
+    private const int endgameAgressionBonus = 8;
+
+    #endregion
+
+    #region PublicMethods
     public AIHandler(BoardHandler boardHandler, Utils.AIDifficulty difficulty)
     {
         this.boardHandler = boardHandler;
+        this.difficulty = difficulty;
 
         switch (difficulty)
         {
-            case Utils.AIDifficulty.Easy: 
+            case Utils.AIDifficulty.Easy:
                 maxDepth = 2;
-                this.difficulty = Utils.AIDifficulty.Easy;
-                break;  
-            case Utils.AIDifficulty.Medium: 
+                break;
+            case Utils.AIDifficulty.Medium:
                 maxDepth = 4;
-                this.difficulty = Utils.AIDifficulty.Medium;
-                break;  
-            case Utils.AIDifficulty.Hard: 
+                break;
+            case Utils.AIDifficulty.Hard:
                 maxDepth = 6;
-                this.difficulty = Utils.AIDifficulty.Hard;
-                break;  
+                break;
+            default:
+                maxDepth = 4;
+                break;
         }
     }
 
@@ -44,10 +54,9 @@ public class AIHandler
             List<Square> validMoves = boardHandler.GetValidMoves(checker);
             foreach (Square move in validMoves)
             {
-                if (previousMove.Item1 == checker && previousMove.Item2 == move)
-                    continue;
+                if (previousMove == (checker, move)) continue;
 
-                int[,] boardState = BoardToMatrix();
+                int[,] boardState = ConvertBoardToMatrix(); 
                 ApplyMove(boardState, checker, move);
 
                 int score = Minimax(boardState, maxDepth, int.MinValue, int.MaxValue, false);
@@ -71,13 +80,15 @@ public class AIHandler
             (bestChecker, bestSquare) = captureMoves[UnityEngine.Random.Range(0, captureMoves.Count)];
         }
 
-        Debug.Log($"AI evaluated {nodesExplored} board states at depth {maxDepth}.");
         boardHandler.GameHudHandler.UpdateAIStats(nodesExplored, maxDepth, difficulty);
         previousMove = (bestChecker, bestSquare);
 
         return (bestChecker, bestSquare);
     }
 
+    #endregion
+
+    #region PrivateMethods
     private int Minimax(int[,] boardState, int depth, int alpha, int beta, bool isMaximizing)
     {
         if (depth == 0 || IsGameOver(boardState))
@@ -93,8 +104,10 @@ public class AIHandler
                 int[,] newBoard = CopyBoard(boardState);
                 ApplyMove(newBoard, checker, square);
                 int eval = Minimax(newBoard, depth - 1, alpha, beta, false);
+
                 maxEval = Math.Max(maxEval, eval);
                 alpha = Math.Max(alpha, eval);
+
                 if (beta <= alpha) break;
             }
             return maxEval;
@@ -107,9 +120,11 @@ public class AIHandler
                 int[,] newBoard = CopyBoard(boardState);
                 ApplyMove(newBoard, checker, square);
                 int eval = Minimax(newBoard, depth - 1, alpha, beta, true);
+
                 minEval = Math.Min(minEval, eval);
                 beta = Math.Min(beta, eval);
-                if (beta <= alpha) break;
+
+                if (beta <= alpha) break; 
             }
             return minEval;
         }
@@ -117,26 +132,36 @@ public class AIHandler
 
     private int EvaluateBoard(int[,] boardState)
     {
+        int aiPieces = 0;
+        int opponentPieces = 0;
         int score = 0;
 
-        for (int row = 0; row < 8; row++)
+        for (int row = 0; row < boardState.GetLength(0); row++)
         {
-            for (int col = 0; col < 8; col++)
+            for (int col = 0; col < boardState.GetLength(1); col++)
             {
-                if (boardState[row, col] == 1)
+                if (boardState[row, col] == 1) // AI pieces
                 {
-                    score += 5;
-                    if (row >= 5) score += 3; // ✅ Reward advancing forward
-                    if (IsKing(row, col)) score += 10; // ✅ Kings are stronger
+                    aiPieces++;
+                    score += normalPieceValue;
+                    if (row >= 5) score += positionAdvanceBonus;
+                    if (IsKing(row, col)) score += kingPieceValue;
                 }
-                if (boardState[row, col] == 2)
+                else if (boardState[row, col] == 2) // Opponent pieces
                 {
-                    score -= 5;
-                    if (row <= 2) score -= 3;
-                    if (IsKing(row, col)) score -= 10;
+                    opponentPieces++;
+                    score -= normalPieceValue;
+                    if (row <= 2) score -= positionAdvanceBonus;
+                    if (IsKing(row, col)) score -= kingPieceValue;
                 }
             }
         }
+
+        if (aiPieces == 1 && opponentPieces > 1)
+        {
+            score += endgameAgressionBonus; 
+        }
+
         return score;
     }
 
@@ -165,7 +190,6 @@ public class AIHandler
                 }
             }
         }
-
         return captureMoves.Count > 0 ? captureMoves : normalMoves;
     }
 
@@ -193,7 +217,7 @@ public class AIHandler
         boardState[newRow, newCol] = (checker.type == Utils.Type.Black) ? 1 : 2;
     }
 
-    private int[,] BoardToMatrix()
+    private int[,] ConvertBoardToMatrix()
     {
         int[,] matrix = new int[8, 8];
 
@@ -216,6 +240,7 @@ public class AIHandler
 
     private bool IsKing(int row, int col)
     {
-        return (row == 7) || (row == 0); // Kings are at the last row
+        return (row == 7) || (row == 0);
     }
+    #endregion
 }

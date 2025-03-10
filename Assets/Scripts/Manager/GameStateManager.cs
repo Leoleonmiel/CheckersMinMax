@@ -37,13 +37,11 @@ public class GameStateManager : Singleton<GameStateManager>
     public void SetDifficulty(Utils.AIDifficulty difficulty)
     {
         aiDifficulty = difficulty;
-        Debug.Log($"AI Difficulty Set to: {aiDifficulty}");
     }
 
     private void SetDifficultyFromDropdown(int index)
     {
         aiDifficulty = (Utils.AIDifficulty)index;
-        Debug.Log($"AI Difficulty Changed to: {aiDifficulty}");
     }
     #endregion
 }
