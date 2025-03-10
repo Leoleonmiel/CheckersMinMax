@@ -44,22 +44,30 @@ public class GameHudHandler : MonoBehaviour
     #endregion
 
     #region PublicMethods
-    public void ToggleEndScreen(bool showEndScreen)
+    public void ToggleEndScreen(Player player, bool showEndScreen)
     {
-        // Loop through all child objects of the HUD
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject go = transform.GetChild(i).gameObject;
             if (go != EndScreenPanel)
             {
-                go.SetActive(!showEndScreen);  // Deactivate all HUD elements when showEndScreen is true, else reactivate
+                go.SetActive(!showEndScreen); 
             }
         }
 
-        // Set the EndScreenPanel to active or inactive based on the showEndScreen flag
         if (EndScreenPanel != null)
         {
             EndScreenPanel.SetActive(showEndScreen);
+
+            TMP_Text endScreenText = EndScreenPanel.GetComponentInChildren<TMP_Text>();
+            if (endScreenText != null)
+            {
+                endScreenText.text = $"{player.name} Wins!";
+            }
+            else
+            {
+                Debug.LogError("No TMP_Text component found in EndScreenPanel!");
+            }
         }
         else
         {

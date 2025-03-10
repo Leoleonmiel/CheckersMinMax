@@ -17,11 +17,15 @@ public class BoardHandler : MonoBehaviour
     private int boardSize = 8;
     private float squareSize;
 
+    [SerializeField, Tooltip("Control number of rows with pieces")]
+    private int nbOfStartingRows = 3;
+
+    [SerializeField, Tooltip("Starting row offset for checkers")]
+    private int startingRowOffset = 0;
     public int BoardSize => boardSize;
     #endregion
 
     #region UnityMessages
-
     void Awake()
     {
         if (!CalculateSquareSize()) return;
@@ -39,10 +43,11 @@ public class BoardHandler : MonoBehaviour
 
                 if (newSquare.color == Square.Type.Black)
                 {
-                    if (row < 3 || row >= boardSize - 3)
+                    if ((row >= startingRowOffset && row < startingRowOffset + nbOfStartingRows) ||
+                        (row >= boardSize - nbOfStartingRows - startingRowOffset && row < boardSize - startingRowOffset))
                     {
                         Player player;
-                        if (row < 3)
+                        if (row < boardSize / 2)
                         {
                             player = GameManager.Instance.Player1;
                             player.color = Utils.Type.Black;
@@ -59,7 +64,7 @@ public class BoardHandler : MonoBehaviour
             }
         }
 
-        checkerHandler = new CheckerHandler(this); 
+        checkerHandler = new CheckerHandler(this);
         HighlightCheckersThatCanMove();
     }
 
@@ -113,7 +118,7 @@ public class BoardHandler : MonoBehaviour
 
     private void HighlightCheckersThatCanMove()
     {
-        checkerHandler.ClearHighlightedCheckers(); 
+        checkerHandler.ClearHighlightedSelectedCheckers(); 
         Player currentPlayer = GameManager.Instance.CurrentPlayer;
         foreach (Checker checker in currentPlayer.checkers)
         {
@@ -125,13 +130,13 @@ public class BoardHandler : MonoBehaviour
         }
     }
 
-    private bool CanMove(Checker checker)
+    public bool CanMove(Checker checker)
     {
-        List<Square> validMovesForChecker = GetValidMovesForChecker(checker);
+        List<Square> validMovesForChecker = GetValidMoves(checker);
         return validMovesForChecker.Count > 0;
     }
 
-    private List<Square> GetValidMovesForChecker(Checker checker)
+    private List<Square> GetValidMoves(Checker checker)
     {
         List<Square> validMovesForChecker = new List<Square>();
         Square currentSquare = checker.CurrentSquare;
@@ -194,7 +199,7 @@ public class BoardHandler : MonoBehaviour
     {
         GameManager.Instance.SwitchTurn();
         checkerHandler.SetCurrentPlayer(GameManager.Instance.CurrentPlayer);
-        HighlightCheckersThatCanMove(); 
+        HighlightCheckersThatCanMove();
     }
 
     #endregion

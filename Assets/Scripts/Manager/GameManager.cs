@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,8 +20,7 @@ public class GameManager : Singleton<GameManager>
     public event Action<Player> PlayerCreated;
     public event Action<Utils.PlayerID> PlayerSwitched;
     public Action<Player> CheckerLost;
-    public event Action<bool> PlayerHasWon;
-    private bool isActivated = false;
+    public Action<Player,bool> PlayerHasWon;
     #endregion
 
     #region Properties
@@ -40,6 +40,9 @@ public class GameManager : Singleton<GameManager>
         {
             switch (GameStateManager.Instance.currentState)
             {
+                case GameStateManager.State.Menu:
+                    InitPlayersPvP();
+                    break;
                 case GameStateManager.State.PlayerVsPlayer:
                     InitPlayersPvP();
                     break;
@@ -61,12 +64,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        if (Keyboard.current.oKey.wasPressedThisFrame)
-        {
-            isActivated = !isActivated;
-            PlayerHasWon?.Invoke(isActivated);
-            Debug.Log("o pressed");
-        }
+
     }
     #endregion
 

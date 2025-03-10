@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.Security.Cryptography;
 
 public class CheckerHandler
 {
@@ -10,7 +11,6 @@ public class CheckerHandler
     private Checker selectedChecker;
     private BoardHandler boardHandler;
     private Player currentPlayer;
-
     public CheckerHandler(BoardHandler boardHandler)
     {
         this.boardHandler = boardHandler;
@@ -111,8 +111,12 @@ public class CheckerHandler
                 PromoteIfKing(checker);
                 selectedChecker = null;
                 ClearHighlightedSquares();
-                HighlightChecker(checker);
-                boardHandler.SwitchTurn();
+                HighlightSelectedChecker(checker);
+                //boardHandler.SwitchTurn();
+
+                GameManager.Instance.SwitchTurn();
+                currentPlayer = GameManager.Instance.CurrentPlayer;
+                HighlightCheckersThatCanMove();
             });
     }
 
@@ -130,9 +134,21 @@ public class CheckerHandler
         Square checkerSquare = capturedChecker.CurrentSquare;
         checkerSquare.RemoveChecker();
 
-        Player player = GameManager.Instance.Player1.checkers.Contains(capturedChecker) ? GameManager.Instance.Player1 : GameManager.Instance.Player2;
-        player.checkers.Remove(capturedChecker);
-        GameManager.Instance.CheckerLost?.Invoke(player);
+        Player losingPlayer = GameManager.Instance.Player1.checkers.Contains(capturedChecker)
+            ? GameManager.Instance.Player1
+            : GameManager.Instance.Player2;
+
+        losingPlayer.checkers.Remove(capturedChecker);
+        GameManager.Instance.CheckerLost?.Invoke(losingPlayer);
+
+        Player winningPlayer = (losingPlayer == GameManager.Instance.Player1)
+            ? GameManager.Instance.Player2
+            : GameManager.Instance.Player1;
+
+        if (losingPlayer.checkers.Count == 0)
+        {
+            GameManager.Instance.PlayerHasWon?.Invoke(winningPlayer, true); 
+        }
 
         Object.Destroy(capturedChecker.gameObject);
     }
@@ -206,7 +222,7 @@ public class CheckerHandler
         validMoves.Clear();
     }
 
-    private void HighlightChecker(Checker checker)
+    private void HighlightSelectedChecker(Checker checker)
     {
         if (checker == selectedChecker)
         {
@@ -214,7 +230,21 @@ public class CheckerHandler
         }
     }
 
-    public void ClearHighlightedCheckers()
+    private void HighlightCheckersThatCanMove()
+    {
+        ClearHighlightedSelectedCheckers();
+        Player currentPlayer = GameManager.Instance.CurrentPlayer;
+        foreach (Checker checker in currentPlayer.checkers)
+        {
+            if (boardHandler.CanMove(checker))
+            {
+                checker.Highlight(true);
+                AddHighlightedChecker(checker);
+            }
+        }
+    }
+
+    public void ClearHighlightedSelectedCheckers()
     {
         foreach (Checker checker in highlightedCheckers)
         {
@@ -228,7 +258,6 @@ public class CheckerHandler
         currentPlayer = player;
     }
 
-    // Add highlighted checker to the list
     public void AddHighlightedChecker(Checker checker)
     {
         if (!highlightedCheckers.Contains(checker))
