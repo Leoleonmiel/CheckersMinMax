@@ -51,7 +51,7 @@ public class GameHudHandler : MonoBehaviour
             GameObject go = transform.GetChild(i).gameObject;
             if (go != EndScreenPanel)
             {
-                go.SetActive(!showEndScreen); 
+                go.SetActive(false); 
             }
         }
 

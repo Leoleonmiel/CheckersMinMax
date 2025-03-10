@@ -66,6 +66,7 @@ public class BoardHandler : MonoBehaviour
 
         checkerHandler = new CheckerHandler(this);
         HighlightCheckersThatCanMove();
+        GameManager.Instance.OnTurnSwitched += OnTurnSwitched;
     }
 
     void Update()
@@ -73,6 +74,12 @@ public class BoardHandler : MonoBehaviour
         checkerHandler.Update();
     }
 
+    void OnDestroy()
+    {
+        GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
+        checkerHandler.Dispose();
+        checkerHandler = null;
+    }
     #endregion
 
     #region PrivateMethods
@@ -195,13 +202,10 @@ public class BoardHandler : MonoBehaviour
         return squareList[row * boardSize + col];
     }
 
-    public void SwitchTurn()
+    private void OnTurnSwitched(Player currentPlayer)
     {
-        GameManager.Instance.SwitchTurn();
-        checkerHandler.SetCurrentPlayer(GameManager.Instance.CurrentPlayer);
         HighlightCheckersThatCanMove();
     }
-
     #endregion
 
     #region DebugMethods

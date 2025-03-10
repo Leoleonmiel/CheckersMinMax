@@ -1999,8 +1999,9 @@ GameObject:
   - component: {fileID: 1443331765}
   - component: {fileID: 1443331764}
   - component: {fileID: 1443331763}
+  - component: {fileID: 1443331767}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: HudHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2091,6 +2092,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1443331767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443331762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 304fec51b948a93428cb6a5282e3fdbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1Score: {fileID: 146041943}
+  player2Score: {fileID: 390549792}
+  EndScreenPanel: {fileID: 1842267669}
 --- !u!1 &1505159200
 GameObject:
   m_ObjectHideFlags: 0
@@ -2173,8 +2189,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1355179830}
-        m_TargetAssemblyTypeName: BoardHandler, Assembly-CSharp
+      - m_Target: {fileID: 1074384347}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: SwitchTurn
         m_Mode: 1
         m_Arguments:
@@ -2223,53 +2239,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1505159200}
   m_CullTransparentMesh: 1
---- !u!1 &1536033585
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1536033587}
-  - component: {fileID: 1536033586}
-  m_Layer: 0
-  m_Name: HudHandler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1536033586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536033585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 304fec51b948a93428cb6a5282e3fdbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player1Score: {fileID: 146041943}
-  player2Score: {fileID: 390549792}
-  EndScreenPanel: {fileID: 1842267669}
---- !u!4 &1536033587
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1536033585}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1538687276
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2803,6 +2772,5 @@ SceneRoots:
   - {fileID: 1443331766}
   - {fileID: 143495582}
   - {fileID: 1074384348}
-  - {fileID: 1536033587}
   - {fileID: 1082959431}
   - {fileID: 960152897}

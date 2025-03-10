@@ -18,7 +18,7 @@ public class GameManager : Singleton<GameManager>
     private Utils.PlayerID currentPlayerID;
 
     public event Action<Player> PlayerCreated;
-    public event Action<Utils.PlayerID> PlayerSwitched;
+    public event Action<Player> OnTurnSwitched;
     public Action<Player> CheckerLost;
     public Action<Player,bool> PlayerHasWon;
     #endregion
@@ -89,7 +89,7 @@ public class GameManager : Singleton<GameManager>
     public void SwitchTurn()
     {
         currentPlayerID = currentPlayerID = (Utils.PlayerID)(((int)currentPlayerID + 1) % nbOfPlayers);
-        PlayerSwitched?.Invoke(currentPlayerID);
+        OnTurnSwitched?.Invoke(CurrentPlayer);
     }
 
     #endregion

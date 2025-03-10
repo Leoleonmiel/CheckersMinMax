@@ -25,7 +25,12 @@ public class CameraHandler : MonoBehaviour
     {
         _currentFieldOfView = Camera.main.fieldOfView;
         InitCamera();
-        GameManager.Instance.PlayerSwitched += SwitchToPlayerView;
+        GameManager.Instance.OnTurnSwitched += SwitchToPlayerView;
+    }
+
+    void OnDestroy()
+    {
+        GameManager.Instance.OnTurnSwitched -= SwitchToPlayerView;
     }
     #endregion
 
@@ -42,9 +47,9 @@ public class CameraHandler : MonoBehaviour
         }
     }
 
-    public void SwitchToPlayerView(Utils.PlayerID playerID)
+    public void SwitchToPlayerView(Player player)
     {
-        currentPlayerView = (playerID == Utils.PlayerID.Player1) ? Player1View : Player2View;
+        currentPlayerView = (player.ID == Utils.PlayerID.Player1) ? Player1View : Player2View;
 
         if (_isPerspectiveCamera)
         {

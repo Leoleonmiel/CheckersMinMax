@@ -15,6 +15,12 @@ public class CheckerHandler
     {
         this.boardHandler = boardHandler;
         currentPlayer = GameManager.Instance.CurrentPlayer;
+        GameManager.Instance.OnTurnSwitched += OnTurnSwitched;
+    }
+
+    public void Dispose()
+    {
+        GameManager.Instance.OnTurnSwitched -= OnTurnSwitched;
     }
 
     public void Update()
@@ -113,10 +119,7 @@ public class CheckerHandler
                 ClearHighlightedSquares();
                 HighlightSelectedChecker(checker);
                 //boardHandler.SwitchTurn();
-
                 GameManager.Instance.SwitchTurn();
-                currentPlayer = GameManager.Instance.CurrentPlayer;
-                HighlightCheckersThatCanMove();
             });
     }
 
@@ -264,5 +267,12 @@ public class CheckerHandler
         {
             highlightedCheckers.Add(checker);
         }
+    }
+
+    private void OnTurnSwitched(Player player)
+    {
+        currentPlayer = player;
+        ClearHighlightedSelectedCheckers();
+        HighlightCheckersThatCanMove();
     }
 }
