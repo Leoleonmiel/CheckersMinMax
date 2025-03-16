@@ -21,7 +21,8 @@ This project implements an **advanced Checkers game in Unity** with a powerful *
 
 ## 🏗️ Code Architecture (Composition over Inheritance)
 
-This project follows **Composition over Inheritance** to maintain a **clean and flexible design**.
+This project follows **Composition over Inheritance** to maintain a **clean and flexible design**.  
+The **Singleton pattern** has been **limited to avoid tight dependencies**, ensuring better modularity.
 
 ### 🔹 Key Components:
 - **GameManager** – Handles players, turns, and game state.
@@ -33,6 +34,9 @@ This project follows **Composition over Inheritance** to maintain a **clean and 
 - **More flexibility** – Each component has a clear responsibility.
 - **Better reusability** – AI, board, and game logic are modular.
 - **Avoids deep inheritance chains** – Reduces complexity.
+- **Decoupled Systems** – **Singletons are only used for essential global states** (e.g., GameManager), while other components rely on **dependency injection** for better testability.
+
+**Key takeaway**: **Singletons are kept to a minimum**, and **most components communicate through composition**, reducing unintended dependencies and making the system more **scalable and maintainable**. 🚀
 
 ---
 
