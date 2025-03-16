@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -46,6 +47,11 @@ public class LoadHandler : MonoBehaviour
     {
         GameStateManager.Instance.currentState = GameStateManager.State.AIVsAI;
         StartCoroutine(LoadSceneWithFade("GameScene"));
+    }
+
+    public void SetExitGame()
+    {
+        Application.Quit();
     }
     #endregion
 

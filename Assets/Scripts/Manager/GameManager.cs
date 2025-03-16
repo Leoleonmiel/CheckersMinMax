@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Build;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,9 +18,12 @@ public class GameManager : Singleton<GameManager>
     private Dictionary<int, Checker> selectedCheckers = new();
     private Utils.PlayerID currentPlayerID;
     private AIHandler aiHandler;
+    private InputAction escapeAction;
+    public bool isPaused = false;
 
     public event Action<Player> PlayerCreated;
     public event Action<Player> OnTurnSwitched;
+    public event Action<bool> GamePaused;
     public Action<Player> CheckerLost;
     public Action<Player, bool> PlayerHasWon;
 
@@ -76,6 +78,21 @@ public class GameManager : Singleton<GameManager>
     {
         InitPlayerScore();
         currentPlayerID = Utils.PlayerID.Player1;
+
+        escapeAction = InputSystem.actions.FindAction("Pause");
+
+        if (escapeAction != null)
+        {
+            escapeAction.performed += TogglePause;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (escapeAction != null)
+        {
+            escapeAction.performed -= TogglePause;
+        }
     }
     #endregion
 
@@ -145,6 +162,13 @@ public class GameManager : Singleton<GameManager>
             PlayerCreated?.Invoke(player);
             Debug.Log(player);
         }
+    }
+
+    private void TogglePause(InputAction.CallbackContext ctx)
+    {
+        isPaused = !isPaused;
+        GamePaused?.Invoke(isPaused);
+        Debug.Log(isPaused ? "Game Paused" : "Game Resumed");
     }
     #endregion
 }

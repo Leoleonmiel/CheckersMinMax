@@ -22,6 +22,8 @@ public class Checker : MonoBehaviour
     #endregion
 
     #region UnityMessages
+
+#if UNITY_EDITOR
     public void OnDrawGizmos()
     {
         if (Application.isPlaying)
@@ -33,7 +35,8 @@ public class Checker : MonoBehaviour
             }
         }
     }
-    #endregion
+#endif
+#endregion
 
     #region PublicMethods
     public void Init(int id)

@@ -224,6 +224,7 @@ public class BoardHandler : MonoBehaviour
     #endregion
 
     #region DebugMethods
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
         if (squarePrefab == null || boardStartPosition == null) { return; }
@@ -246,6 +247,7 @@ public class BoardHandler : MonoBehaviour
         UnityEditor.Handles.color = Color.red;
         UnityEditor.Handles.Label(labelPosition, $"({column},{line})");
     }
-    #endregion
+#endif
+#endregion
 }
 

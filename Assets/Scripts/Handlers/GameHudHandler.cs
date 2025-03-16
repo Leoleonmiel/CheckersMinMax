@@ -22,6 +22,7 @@ public class GameHudHandler : MonoBehaviour
             GameManager.Instance.PlayerCreated += ChangeScoreText;
             GameManager.Instance.CheckerLost += ChangeScoreText;
             GameManager.Instance.PlayerHasWon += ToggleEndScreen;
+            GameManager.Instance.GamePaused += TogglePauseScreen;
         }
     }
     #endregion
@@ -60,6 +61,29 @@ public class GameHudHandler : MonoBehaviour
             if (endScreenText != null)
             {
                 endScreenText.text = $"{player.name} Wins!";
+            }
+        }
+    }
+
+    public void TogglePauseScreen(bool showPauseScreen)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GameObject go = transform.GetChild(i).gameObject;
+            if (go != EndScreenPanel)
+            {
+                go.SetActive(false);
+            }
+        }
+
+        if (EndScreenPanel != null)
+        {
+            EndScreenPanel.SetActive(showPauseScreen);
+
+            TMP_Text endScreenText = EndScreenPanel.GetComponentInChildren<TMP_Text>();
+            if (endScreenText != null)
+            {
+                endScreenText.text = $"Game Paused!";
             }
         }
     }
