@@ -66,13 +66,13 @@ The AI uses **Minimax**, a decision-making algorithm for **turn-based games**, o
 2. **Maximizing Player (AI)** picks the highest value move.
 3. **Minimizing Player (Opponent)** tries to minimize AI’s best move.
 
-### ✂️ Alpha-Beta Pruning:
-- **Cuts off** branches **that won't affect the final decision**, speeding up computation.
-
 ### 📊 Example Minimax Tree:
 ![Minimax Tree](minimax.jpg)
 
 Each **leaf node** represents a game state score, propagating **optimal decisions** back to the root.
+
+### ✂️ Alpha-Beta Pruning:
+- **Cuts off** branches **that won't affect the final decision**, speeding up computation.
 
 ### 🔥 Alpha-Beta Pruning in Action:
 ![AI Playing Checkers](alphabeta.gif)
