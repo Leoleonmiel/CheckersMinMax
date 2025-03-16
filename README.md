@@ -62,15 +62,3 @@ This optimization reduces the number of evaluated nodes, allowing the AI to **ma
 2️⃣ **Propagate values upward** using Minimax.  
 3️⃣ **Prune branches** where a move is already worse than an explored option.  
 4️⃣ **Speed up decision-making** while maintaining accuracy.
-
----
-
-## 🚀 Features & Future Improvements
-- ✅ **Real-time AI statistics** (evaluated moves, search depth).
-- ✅ **AI prioritizes captures & kings** for better gameplay.
-- 🔜 **Custom AI personalities** (aggressive, defensive, balanced).
-- 🔜 **Online multiplayer mode**.
-
----
-## 📜 Credits & License
-This project is open-source. Feel free to **contribute, modify, or improve** it! 
