@@ -51,7 +51,6 @@ To improve AI performance and **ensure accurate move evaluation**, a **debug mod
 ✔ **Helps debug movement errors** (e.g., jumping to an invalid square).  
 ✔ **Assists in testing AI algorithms**, ensuring Minimax and Alpha-Beta Pruning function properly.  
 
-### 🏗️ **For Non-Technical Contributors:**
 This debug mode allows **easy visual inspection** of how the game plays out.  
 If the **AI makes a wrong move**, this view **helps identify potential issues** in the logic.
 
