@@ -40,7 +40,7 @@ This project follows **Composition over Inheritance** to maintain a **clean and 
 
 To improve AI performance and **ensure accurate move evaluation**, a **debug mode** is included:
 
-![Board Debug](debug.png)
+<img src="debug.png" width="600">
 
 ### 🔍 **How It Helps:**
 ✔ **Ensures AI correctly evaluates valid moves.**  
