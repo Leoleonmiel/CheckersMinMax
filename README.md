@@ -23,7 +23,7 @@ This project implements an **advanced Checkers game in Unity** with a powerful *
 
 This project follows **Composition over Inheritance** to maintain a **clean and flexible design**.
 
-### Key Components:
+### 🔹 Key Components:
 - **GameManager** – Handles players, turns, and game state.
 - **BoardHandler** – Manages the board and valid moves.
 - **CheckerHandler** – Handles **piece selection, movement, and AI execution**.
@@ -33,6 +33,23 @@ This project follows **Composition over Inheritance** to maintain a **clean and 
 - **More flexibility** – Each component has a clear responsibility.
 - **Better reusability** – AI, board, and game logic are modular.
 - **Avoids deep inheritance chains** – Reduces complexity.
+
+---
+
+## 🛠️ Debugging & AI Insights
+
+To improve AI performance and **ensure accurate move evaluation**, a **debug mode** is included:
+
+![Board Debug](debug.png)
+
+### 🔍 **How It Helps:**
+✔ **Ensures AI correctly evaluates valid moves.**  
+✔ **Helps debug movement errors** (e.g., jumping to an invalid square).  
+✔ **Assists in testing AI algorithms**, ensuring Minimax and Alpha-Beta Pruning function properly.  
+
+### 🏗️ **For Non-Technical Contributors:**
+This debug mode allows **easy visual inspection** of how the game plays out.  
+If the **AI makes a wrong move**, this view **helps identify potential issues** in the logic.
 
 ---
 
@@ -53,6 +70,7 @@ The AI uses **Minimax**, a decision-making algorithm for **turn-based games**, o
 
 Each **leaf node** represents a game state score, propagating **optimal decisions** back to the root.
 
+### 🔥 Alpha-Beta Pruning in Action:
 ![AI Playing Checkers](alphabeta.gif)
 
 Each **red node** represents a **pruned branch**, meaning that the AI **did not need to explore** these moves.  
@@ -62,4 +80,11 @@ This optimization reduces the number of evaluated nodes, allowing the AI to **ma
 1️⃣ **Evaluate leaf nodes** to determine game outcomes.  
 2️⃣ **Propagate values upward** using Minimax.  
 3️⃣ **Prune branches** where a move is already worse than an explored option.  
-4️⃣ **Speed up decision-making** while maintaining accuracy.
+4️⃣ **Speed up decision-making** while maintaining accuracy.  
+
+---
+
+## 🚀 How to Run the Game
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-repo/checkers-ai.git
