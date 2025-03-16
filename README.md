@@ -54,6 +54,7 @@ The AI uses **Minimax**, a decision-making algorithm for **turn-based games**, o
 Each **leaf node** represents a game state score, propagating **optimal decisions** back to the root.
 
 ![AI Playing Checkers](alphabeta.gif)
+
 Each **red node** represents a **pruned branch**, meaning that the AI **did not need to explore** these moves.  
 This optimization reduces the number of evaluated nodes, allowing the AI to **make faster and smarter decisions** without affecting the outcome.
 
